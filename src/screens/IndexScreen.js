@@ -1,17 +1,27 @@
-import React, { useContext } from 'react';
-import { View, Text, StyleSheet, FlatList, Button, TouchableOpacity } from 'react-native';
+import React, { useContext, useEffect } from 'react';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { Context as BlogContext } from '../context/BlogContext';
 import { Feather } from '@expo/vector-icons';
 // Context as BlogContext to keep track of differnt Context in case you have multiple
 const IndexScreen = ({ navigation }) => {
-  const { state, addBlogPost, deleteBlogPost } = useContext(BlogContext);
+  const { state, deleteBlogPost, getBlogPosts } = useContext(BlogContext);
+
+  useEffect(() => {
+    getBlogPosts();
+    const listener = navigation.addListener('didFocus', () => {
+      getBlogPosts();
+    });
+
+    return () => {
+      listener.remove();
+    };
+  }, []);
 
   return (
     <View>
       <View style={styles.buttonContainer}>
-        <Button title="Add Post" onPress={addBlogPost} />
       </View>
-      <FlatList 
+      <FlatList
         data={state}
         keyExtractor={(blogPost) => blogPost.title}
         renderItem={({ item }) => {
@@ -35,10 +45,10 @@ IndexScreen.navigationOptions = ({ navigation }) => {
   return {
     headerRight: (
       <TouchableOpacity onPress={() => navigation.navigate('Create')}>
-        <Feather name="plus" size={30} style={{ paddingRight: 15 }}/>
+        <Feather name="plus" size={30} style={{ paddingRight: 15 }} />
       </TouchableOpacity>
     )
-      
+
   };
 };
 
@@ -59,9 +69,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     borderBottomWidth: 1,
-    borderColor: 'gray',
-    paddingTop: 10,
-    paddingBottom: 10
+    borderColor: 'gray'
   }
 });
 

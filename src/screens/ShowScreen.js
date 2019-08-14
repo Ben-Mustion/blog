@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Context } from '../context/BlogContext';
+import { EvilIcons } from '@expo/vector-icons';
 // Could use Context as BlogContext for multiple context calls
 
 const ShowScreen = ({ navigation }) => {
@@ -10,11 +11,38 @@ const ShowScreen = ({ navigation }) => {
 
   return (
     <View>
-      <Text>{blogPost.title}</Text>
+      <View style={styles.title}>
+        <Text>{blogPost.title}</Text>
+      </View>
+      <View style={styles.content}>
+        <Text>{blogPost.content}</Text>
+      </View>
     </View>
-  )
-}
+  );
+};
  
-const styles = StyleSheet.create({});
+ShowScreen.navigationOptions = ({ navigation }) => {
+  return {
+    headerRight: (
+      <TouchableOpacity 
+        onPress={() => 
+          navigation.navigate('Edit', { id: navigation.getParam('id')})
+        }
+      >
+        <EvilIcons name="pencil" size={35} />
+      </TouchableOpacity>
+    )
+  };
+};
+
+const styles = StyleSheet.create({
+  title: {
+    fontSize: 20,
+    paddingBottom: 15
+  },
+  content: {
+    fontSize: 18
+  }
+});
  
 export default ShowScreen;
